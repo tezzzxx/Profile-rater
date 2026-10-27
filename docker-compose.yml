@@ -1,0 +1,72 @@
+services:
+
+  mongo_user:
+    image: mongo:7
+    container_name: mongo_user
+    ports:
+      - "27017:27017"
+    volumes:
+      - user_data:/data/db
+    networks:
+      - m2026
+
+  mongo_rating:
+    image: mongo:7
+    container_name: mongo_rating
+    ports:
+      - "27018:27017"
+    volumes:
+      - rating_data:/data/db
+    networks:
+        - m2026
+
+  mongo_matching:
+    image: mongo:7
+    container_name: mongo_matching
+    ports:
+      - "27019:27017"
+    volumes:
+      - matching_data:/data/db
+    networks:
+      - m2026
+
+  kafka:
+    image: apache/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,HOST:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_LISTENERS: CONTROLLER://:9091,HOST://:9092,DOCKER://:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,DOCKER://kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - m2026
+
+  consul:
+    image: hashicorp/consul:2.0.0
+    container_name: consul
+    ports:
+      - "8500:8500"
+    command:
+        - "agent"
+        - "-dev"
+        - "-node=m26"
+        - "-client=0.0.0.0"
+    networks:
+      - m2026
+
+networks:
+  m2026:
+    name: m2026
+    driver: bridge
+
+volumes:
+    user_data:
+    rating_data:
+    matching_data:
