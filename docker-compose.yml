@@ -88,6 +88,7 @@ services:
         context: ./user
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/users?retryWrites=true&w=majority
     depends_on:
       mongo_user:
         condition: service_healthy
