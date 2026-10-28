@@ -88,10 +88,8 @@ services:
         context: ./user
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/users?retryWrites=true&w=majority
+      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/userService?retryWrites=true&w=majority
     depends_on:
-      mongo_user:
-        condition: service_healthy
       kafka:
         condition: service_healthy
     networks:
@@ -103,9 +101,8 @@ services:
       context: ./rating
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/ratingService?retryWrites=true&w=majority
     depends_on:
-      mongo_rating:
-        condition: service_healthy
       kafka:
         condition: service_healthy
     networks:
@@ -117,9 +114,8 @@ services:
       context: ./matching
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/matchingService?retryWrites=true&w=majority
     depends_on:
-      mongo_matching:
-        condition: service_healthy
       kafka:
         condition: service_healthy
     networks:
