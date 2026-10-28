@@ -7,6 +7,11 @@ services:
       - "27017:27017"
     volumes:
       - user_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - m2026
 
@@ -17,6 +22,11 @@ services:
       - "27018:27017"
     volumes:
       - rating_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
         - m2026
 
@@ -27,6 +37,11 @@ services:
       - "27019:27017"
     volumes:
       - matching_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet",  "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - m2026
 
@@ -45,6 +60,12 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
       KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
     networks:
       - m2026
 
@@ -68,8 +89,10 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
-      - mongo_user
-      - kafka
+      mongo_user:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     networks:
         - m2026
 
@@ -80,8 +103,10 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
-      - mongo_rating
-      - kafka
+      mongo_rating:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     networks:
       - m2026
 
@@ -92,8 +117,10 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
-      - mongo_matching
-      - kafka
+      mongo_matching:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
     networks:
       - m2026
 
