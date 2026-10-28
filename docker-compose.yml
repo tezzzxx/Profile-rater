@@ -88,10 +88,17 @@ services:
         context: ./user
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/userService?retryWrites=true&w=majority
     depends_on:
+      mongo_user:
+        condition: service_healthy
       kafka:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
         - m2026
 
@@ -101,10 +108,17 @@ services:
       context: ./rating
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/ratingService?retryWrites=true&w=majority
     depends_on:
+      mongo_rating:
+        condition: service_healthy
       kafka:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - m2026
 
@@ -114,10 +128,17 @@ services:
       context: ./matching
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_MONGODB_URI: mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}/matchingService?retryWrites=true&w=majority
     depends_on:
+      mongo_matching:
+        condition: service_healthy
       kafka:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
       - m2026
 
