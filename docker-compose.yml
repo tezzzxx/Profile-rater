@@ -61,6 +61,42 @@ services:
     networks:
       - m2026
 
+  user:
+    image: user:0.0.1-SNAPSHOT
+    build:
+        context: ./user
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - mongo_user
+      - kafka
+    networks:
+        - m2026
+
+  rating:
+    image: rating:0.0.1-SNAPSHOT
+    build:
+      context: ./rating
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - mongo_rating
+      - kafka
+    networks:
+      - m2026
+
+  matching:
+    image: matching:0.0.1-SNAPSHOT
+    build:
+      context: ./matching
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - mongo_matching
+      - kafka
+    networks:
+      - m2026
+
 networks:
   m2026:
     name: m2026
