@@ -17,3 +17,4 @@ All external calls go through the gateway: `http://localhost:8080`.
 JSON uses camelCase. IDs are strings (Mongo ObjectId).
 Errors are returned as: `{ "error": "description" }`
 
+# Lage mer senere
