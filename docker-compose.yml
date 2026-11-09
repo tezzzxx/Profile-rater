@@ -67,6 +67,8 @@ services:
         - "-client=0.0.0.0"
     networks:
       - m2026
+    healthcheck:
+      test: ["CMD", "consul", "members"]
 
   profile:
     image: profile:0.0.1-SNAPSHOT
@@ -80,7 +82,7 @@ services:
       kafka:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8001/actuator/health | grep -q UP || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -100,7 +102,7 @@ services:
       kafka:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')" ]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8002/actuator/health | grep -q UP || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
