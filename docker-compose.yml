@@ -30,7 +30,6 @@ services:
     networks:
         - m2026
 
-
   kafka:
     image: apache/kafka:latest
     container_name: kafka
@@ -65,10 +64,13 @@ services:
         - "-dev"
         - "-node=m26"
         - "-client=0.0.0.0"
+    healthcheck:
+      test: [ "CMD", "consul", "members" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - m2026
-    healthcheck:
-      test: ["CMD", "consul", "members"]
 
   profile:
     image: profile:0.0.1-SNAPSHOT
@@ -103,12 +105,33 @@ services:
         condition: service_healthy
       kafka:
         condition: service_healthy
+      consul:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8002/actuator/health | grep -q UP || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
+    networks:
+      - m2026
+
+  gateway:
+    image: gateway:0.0.1-SNAPSHOT
+    build:
+      context: ./gateway
+    ports:
+      - "8080:8080"
+    environment:
+      PROFILE_URI: http://profile:8001/
+      RATING_URI: http://rating:8002/
+    depends_on:
+      profile:
+        condition: service_healthy
+      rating:
+        condition: service_healthy
+      consul:
+        condition: service_healthy
     networks:
       - m2026
 
