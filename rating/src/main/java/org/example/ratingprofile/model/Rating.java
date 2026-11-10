@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document("ratings")
-public class RatingModel {
+public class Rating {
     @Id
     private String id;
     private String raterId;
