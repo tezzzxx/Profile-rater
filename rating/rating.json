@@ -1,0 +1,8 @@
+{
+  "raterId": "rater-1",
+  "profileId": "test123",
+  "picRating": 4,
+  "bioRating": 3,
+  "overAllRating": 5,
+  "profileComment": "Test"
+}
