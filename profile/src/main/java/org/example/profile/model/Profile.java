@@ -23,4 +23,17 @@ public class Profile {
     private String bioA;
     private String bioB;
     private Instant createdAt;
+
+    private int ratingCount;
+
+    private int photosScoreSum;
+    private int bioScoreSum;
+    private int overallScoreSum;
+
+    private int bioAScoreSum;
+    private int bioARatingCount;
+    private int bioBScoreSum;
+    private int bioBRatingCount;
+
+    private Set<String> ratedByRatersIds = new HashSet<>();
 }
