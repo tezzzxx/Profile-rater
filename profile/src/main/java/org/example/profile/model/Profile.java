@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.HashSet;
+import java.util.Set;
 
 import java.time.Instant;
 
@@ -35,5 +37,5 @@ public class Profile {
     private int bioBScoreSum;
     private int bioBRatingCount;
 
-    private Set<String> ratedByRatersIds = new HashSet<>();
+    private Set<String> ratedByRaterIds = new HashSet<>();
 }
