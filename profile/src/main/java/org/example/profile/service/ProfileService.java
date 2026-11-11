@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
- // oppretter profil, henter en profil, velger neste profil en nettleser skal vurdere (MED a/B test av bio)
+ // oppretter profil, henter en profil, velger neste profil en nettleser skal vurdere (MED a/B test av bioRating)
 
 @Service
 @RequiredArgsConstructor
