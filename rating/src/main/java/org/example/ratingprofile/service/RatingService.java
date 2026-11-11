@@ -2,6 +2,8 @@ package org.example.ratingprofile.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.ratingprofile.client.ProfileClient;
+import org.example.ratingprofile.event.RatingCreatedEvent;
+import org.example.ratingprofile.event.RatingEventPublisher;
 import org.example.ratingprofile.exception.AlreadyRatedException;
 import org.example.ratingprofile.exception.ProfileNotFoundException;
 import org.example.ratingprofile.model.Rating;
@@ -16,6 +18,7 @@ public class RatingService {
 
     private final RatingRepo ratingRepo;
     private final ProfileClient profileClient;
+    private final RatingEventPublisher eventPublisher;
 
     public Rating createRating(Rating rating) {
         if (ratingRepo.existsByProfileIdAndRaterId(rating.getProfileId(), rating.getRaterId())) {
@@ -28,6 +31,10 @@ public class RatingService {
         
         rating.setId(null);
         rating.setCreatedAt(LocalDateTime.now());
-        return ratingRepo.save(rating);
+        Rating saved = ratingRepo.save(rating);
+
+        eventPublisher.publish(RatingCreatedEvent.from(saved));
+
+        return saved;
     }
 }
