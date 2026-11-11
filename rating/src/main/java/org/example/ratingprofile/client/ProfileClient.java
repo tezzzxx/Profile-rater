@@ -1,5 +1,6 @@
 package org.example.ratingprofile.client;
 
+import org.example.ratingprofile.event.RatingEventPublisher;
 import org.example.ratingprofile.exception.ProfileServiceUnavailableException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,7 @@ public class ProfileClient {
     private final RestClient restClient;
 
     public ProfileClient(RestClient.Builder builder,
-                         @Value("${profile.base-url}") String baseUrl) {
+                         @Value("${profile.base-url}") String baseUrl, RatingEventPublisher eventPublisher) {
         this.restClient = builder.baseUrl(baseUrl).build();
     }
 
