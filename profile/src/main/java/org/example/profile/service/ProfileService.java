@@ -12,6 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
+ // oppretter profil, henter en profil, velger neste profil en nettleser skal vurdere (MED a/B test av bio)
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +23,6 @@ public class ProfileService {
 
     private static final String OWNER_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     private static final SecureRandom RANDOM = new SecureRandom();
-
 
     private final ProfileRepo repo;
 
@@ -48,6 +51,26 @@ public class ProfileService {
         return repo.findById(id)
                 .map(ProfileResponse::from)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
+    }
+
+    public Optional<ProfileResponse> getNextProfileToRate(String raterId) {
+
+        List<Profile> notYetRated = repo.findByRatedByRaterIdsNotContaining(raterId);
+        if (notYetRated.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Profile chosenProfile = notYetRated.get(RANDOM.nextInt(notYetRated.size()));
+
+        String bioVersion = chooseBioVersion(chosenProfile);
+        return Optional.of(ProfileResponse.from(chosenProfile, bioVersion));
+    }
+
+    private String chooseBioVersion(Profile profile){
+        if (profile.getBioB() == null) {
+            return "A";
+        }
+        return RANDOM.nextBoolean() ? "A" : "B";
     }
 
     private String newOwnerCode(){
