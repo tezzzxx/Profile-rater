@@ -26,7 +26,7 @@ public class ProfileClient {
             return true;
         } catch (HttpClientErrorException.NotFound e) {
             return false;
-        } catch (RestClientException e) {
+        } catch (RestClientException | IllegalStateException e) {
             throw new ProfileServiceUnavailableException();
         }
     }
