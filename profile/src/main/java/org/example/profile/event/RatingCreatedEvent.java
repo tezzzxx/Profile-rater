@@ -7,8 +7,8 @@ public record RatingCreatedEvent(
         String raterId,
         String profileId,
         String bioVersion,
-        int photos,
-        int bio,
-        int overall,
+        int picRating,
+        int bioRating,
+        int overallRating,
         Instant createdAt
 ) {}

@@ -30,17 +30,17 @@ public class ProfileScoreService {
             return;
         }
 
-        // legger til poeng og teller for bioA eller bioB og overall
+        // legger til poeng og teller for bioA eller bioB og overallRating
         profile.setRatingCount(profile.getRatingCount() + 1);
-        profile.setPhotosScoreSum(profile.getPhotosScoreSum() + event.photos());
-        profile.setBioScoreSum(profile.getBioScoreSum() + event.bio());
-        profile.setOverallScoreSum(profile.getOverallScoreSum() + event.overall());
+        profile.setPhotosScoreSum(profile.getPhotosScoreSum() + event.picRating());
+        profile.setBioScoreSum(profile.getBioScoreSum() + event.bioRating());
+        profile.setOverallScoreSum(profile.getOverallScoreSum() + event.overallRating());
 
         if ("B".equals(event.bioVersion())) {
-            profile.setBioBScoreSum(profile.getBioBScoreSum() + event.bio());
+            profile.setBioBScoreSum(profile.getBioBScoreSum() + event.bioRating());
             profile.setBioBRatingCount(profile.getBioBRatingCount() + 1);
         } else {
-            profile.setBioAScoreSum(profile.getBioAScoreSum() + event.bio());
+            profile.setBioAScoreSum(profile.getBioAScoreSum() + event.bioRating());
             profile.setBioARatingCount(profile.getBioARatingCount() + 1);
         }
 
