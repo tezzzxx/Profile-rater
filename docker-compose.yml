@@ -123,8 +123,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      PROFILE_URI: http://profile:8001/
-      RATING_URI: http://rating:8002/
+      CONSUL_HOST: consul
+      CONSUL_PREFER_IP: "true"
     depends_on:
       profile:
         condition: service_healthy
