@@ -24,9 +24,10 @@ export type Profile = {
 export type NewRating = {
     profileId: string;
     raterId: string;
+    bioVersion: string;
     picRating: number;
     bioRating: number;
-    overAllRating: number;
+    overallRating: number;
     profileComment: string;
 };
 

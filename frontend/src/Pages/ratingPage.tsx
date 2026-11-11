@@ -9,7 +9,7 @@ export default function RatingPage() {
     const [error, setError] = useState<string | null>(null);
     const [picRating, setPicRating] = useState(3);
     const [bioRating, setBioRating] = useState(3);
-    const [overAllRating, setOverAllRating] = useState(3);
+    const [overallRating, setOverallRating] = useState(3);
     const [comment, setComment] = useState("");
     const [sending, setSending] = useState(false);
 
@@ -35,15 +35,16 @@ export default function RatingPage() {
             await submitRating({
                 profileId: profile.id,
                 raterId,
+                bioVersion: profile.bioVersion,
                 picRating,
                 bioRating,
-                overAllRating,
+                overallRating,
                 profileComment: comment,
             });
 
             setPicRating(3);
             setBioRating(3);
-            setOverAllRating(3);
+            setOverallRating(3);
             setComment("");
             await loadNext();
         } catch (e) {
@@ -71,7 +72,7 @@ export default function RatingPage() {
             <form onSubmit={handleSubmit}>
                 <ScoreInput label="Photo" value={picRating} onChange={setPicRating} />
                 <ScoreInput label="Bio" value={bioRating} onChange={setBioRating} />
-                <ScoreInput label="Overall" value={overAllRating} onChange={setOverAllRating} />
+                <ScoreInput label="Overall" value={overallRating} onChange={setOverallRating} />
 
                 <label>
                     Comment (optional)
