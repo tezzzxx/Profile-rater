@@ -15,4 +15,16 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleAlreadyRated(AlreadyRatedException e) {
         return Map.of("error", e.getMessage());
     }
+
+    @ExceptionHandler(ProfileNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleProfileNotFound(ProfileNotFoundException e) {
+        return Map.of("error", e.getMessage());
+    }
+
+    @ExceptionHandler(ProfileServiceUnavailableException.class)
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public Map<String, String> handleProfileUnavailable(ProfileServiceUnavailableException e) {
+        return Map.of("error", e.getMessage());
+    }
 }
