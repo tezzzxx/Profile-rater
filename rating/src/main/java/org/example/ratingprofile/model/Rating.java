@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -14,12 +14,13 @@ import java.time.LocalDateTime;
 @Document("ratings")
 public class Rating {
     @Id
-    private String id;
+    private String ratingId;
     private String raterId;
     private String profileId;
+    private String bioVersion;
     private int picRating;
     private int bioRating;
-    private int overAllRating;
+    private int overallRating;
     private String profileComment;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 }

@@ -10,7 +10,7 @@ import org.example.ratingprofile.model.Rating;
 import org.example.ratingprofile.repo.RatingRepo;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +28,9 @@ public class RatingService {
         if (!profileClient.profileExists(rating.getProfileId())) {
             throw new ProfileNotFoundException(rating.getProfileId());
         }
-        
-        rating.setId(null);
-        rating.setCreatedAt(LocalDateTime.now());
+
+        rating.setRatingId(null);
+        rating.setCreatedAt(Instant.now());
         Rating saved = ratingRepo.save(rating);
 
         eventPublisher.publish(RatingCreatedEvent.from(saved));
