@@ -13,12 +13,12 @@ public record ProfileResponse(
         String bio,
         String bioVersion
 ){
-    // viser alltid bio A (brukes av GET /profiles/{id}
+    // viser alltid bioRating A (brukes av GET /profiles/{id}
     public static ProfileResponse from (Profile profile){
         return from (profile, "A");
     }
 
-    // viser bio A eller B, avhengig av bioVersion (brukes av GET (profiles/next)
+    // viser bioRating A eller B, avhengig av bioVersion (brukes av GET (profiles/next)
     public static ProfileResponse from (Profile profile, String bioVersion){
 
         String bio = "B".equals(bioVersion) ? profile.getBioB() : profile.getBioA();
