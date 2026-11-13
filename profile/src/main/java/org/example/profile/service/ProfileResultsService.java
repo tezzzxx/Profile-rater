@@ -6,10 +6,10 @@ import org.example.profile.dto.RatingCommentResponse;
 import org.example.profile.dto.ResultsResponse;
 import org.example.profile.model.Profile;
 import org.example.profile.repo.ProfileRepo;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.example.profile.config.ProfileProperties;
 
 import java.util.List;
 
@@ -21,15 +21,13 @@ public class ProfileResultsService{
 
     private final ProfileRepo repo;
     private final RatingClient ratingClient;
-
-    // hvor mange vurderinger som trengs før tallene vises
-    @Value("${profile.min-ratings:5}")
-    private int minRatingsToShow;
+    private final ProfileProperties profileProperties;
 
     public ResultsResponse getResults(String ownerCode){
         Profile profile = repo.findByOwnerCode(ownerCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile found with that owner code"));
 
+        int minRatingsToShow = profileProperties.getMinRatings();
         boolean ready = profile.getRatingCount() >= minRatingsToShow;
 
         if(!ready){

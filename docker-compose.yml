@@ -72,6 +72,20 @@ services:
     networks:
       - m2026
 
+  consul-init:
+    image: hashicorp/consul:2.0.0
+    volumes:
+      - ./consul/init-kv.sh:/init-kv.sh:ro
+    environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+    entrypoint: [ "sh", "/init-kv.sh" ]
+    depends_on:
+      consul:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - m2026
+
   profile:
     image: profile:0.0.1-SNAPSHOT
     build:
