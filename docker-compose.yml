@@ -135,6 +135,22 @@ services:
     networks:
       - m2026
 
+  frontend:
+    image: frontend:0.0.1-SNAPSHOT
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - gateway
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - m2026
+
 
 networks:
   m2026:
