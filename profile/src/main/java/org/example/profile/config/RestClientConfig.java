@@ -11,6 +11,6 @@ public class RestClientConfig {
     @Bean
     @LoadBalanced
     public RestClient.Builder restClientBuilder() {
-        return new RestClient.builder();
+        return RestClient.builder();
     }
 }

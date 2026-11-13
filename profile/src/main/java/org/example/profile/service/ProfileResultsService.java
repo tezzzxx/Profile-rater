@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ProfileResultService{
+public class ProfileResultsService{
 
     private final ProfileRepo repo;
     private final RatingClient ratingClient;
@@ -30,7 +30,7 @@ public class ProfileResultService{
         Profile profile = repo.findByOwnerCode(ownerCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile found with that owner code"));
 
-        boolean ready = profile.getRatinCount() >= minRatingsToShow;
+        boolean ready = profile.getRatingCount() >= minRatingsToShow;
 
         if(!ready){
             return new ResultsResponse(profile.getId(), profile.getRatingCount(), minRatingsToShow,
@@ -68,7 +68,7 @@ public class ProfileResultService{
         if (count == 0){
             return null;
         }
-        return Math.round((double) sum / count * 10 / 10.0);
+        return Math.round((double) sum / count * 10) / 10.0;
     }
 
 }

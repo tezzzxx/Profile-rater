@@ -4,7 +4,7 @@ import java.util.List;
 
 //Info får eieren av profilen se på resultatsiden
 
-public record ResultResponse(
+public record ResultsResponse(
         String profileId,
         int ratingCount,
         int minRatingsToShow,

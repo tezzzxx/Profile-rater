@@ -19,8 +19,8 @@ public class RatingClient {
     private final RestClient restClient;
 
     //rating.base-url = http://rating (navnet i Consul)
-    public RatingClient(RestClient.Builder, @Value("${rating.base-url}") String ratingBaseUrl) {
-        this.restClient = restClientBuilder.baseUrl(ratingBaseUrl).build();
+    public RatingClient(RestClient.Builder builder, @Value("${rating.base-url}") String ratingBaseUrl) {
+        this.restClient = builder.baseUrl(ratingBaseUrl).build();
     }
 
     //henter kommentarer --> hvis ikke rating svarer så får vi en tom liste og ikke en feil
@@ -29,9 +29,10 @@ public class RatingClient {
             List<RatingCommentResponse> comments = restClient.get()
                     .uri("/ratings/profile/{profileId}", profileId)
                     .retrieve()
-                    .body(new ParaameterizedTypeReference<List<RatingCommentResponse>>(){});
+                    .body(new ParameterizedTypeReference<List<RatingCommentResponse>>(){});
+            return comments != null ? comments : List.of();
         }catch (RestClientException | IllegalStateException e){
-            log.warn("Could not fetch comments from rating profile{}: {}", profileId, e.getmessage());
+            log.warn("Could not fetch comments from rating for profile {}: {}", profileId, e.getMessage());
             return List.of();
         }
     }
