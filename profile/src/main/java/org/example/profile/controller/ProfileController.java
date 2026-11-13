@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.example.profile.dto.ResultsResponse;
 import org.example.profile.service.ProfileResultsService;
+import lombok.extern.slf4j.Slf4j;
 
 /*
  * REST-endepunktene for profiler:
@@ -20,6 +21,7 @@ import org.example.profile.service.ProfileResultsService;
  * Tar imot kallet og sender det videre til ProfileService.
  */
 
+@Slf4j
 @RestController
 @RequestMapping("/profiles")
 @RequiredArgsConstructor
@@ -48,6 +50,7 @@ public class ProfileController {
 
     @GetMapping("/{id}")
     public ProfileResponse getById(@PathVariable String id) {
+        log.info("GET /profiles/{} handled by this instance", id);
         return service.getById(id);
     }
 
