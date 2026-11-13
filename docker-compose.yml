@@ -72,10 +72,26 @@ services:
     networks:
       - m2026
 
+  consul-init:
+    image: hashicorp/consul:2.0.0
+    volumes:
+      - ./consul/init-kv.sh:/init-kv.sh:ro
+    environment:
+      CONSUL_HTTP_ADDR: http://consul:8500
+    entrypoint: [ "sh", "/init-kv.sh" ]
+    depends_on:
+      consul:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - m2026
+
   profile:
     image: profile:0.0.1-SNAPSHOT
     build:
         context: profile
+    deploy:
+      replicas: 2
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -98,6 +114,8 @@ services:
     image: rating:0.0.1-SNAPSHOT
     build:
       context: ./rating
+    deploy:
+      replicas: 2
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
@@ -132,6 +150,22 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+    networks:
+      - m2026
+
+  frontend:
+    image: frontend:0.0.1-SNAPSHOT
+    build:
+      context: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - gateway
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - m2026
 
