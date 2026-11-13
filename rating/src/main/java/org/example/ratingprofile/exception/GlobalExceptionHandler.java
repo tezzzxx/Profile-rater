@@ -27,4 +27,10 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleProfileUnavailable(ProfileServiceUnavailableException e) {
         return Map.of("error", e.getMessage());
     }
+
+    @ExceptionHandler(InvalidRatingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleInvalidRating(InvalidRatingException e) {
+        return Map.of("error", e.getMessage());
+    }
 }
