@@ -46,6 +46,7 @@ export default function RatingPage() {
             setBioRating(3);
             setOverallRating(3);
             setComment("");
+            await new Promise((resolve) => setTimeout(resolve, 800));
             await loadNext();
         } catch (e) {
             setError((e as Error).message);

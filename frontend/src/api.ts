@@ -85,3 +85,34 @@ async function errorMessage(res: Response): Promise<string> {
         return `Something went wrong (${res.status})`;
     }
 }
+
+export type BioVersionResult = { average: number | null; count: number };
+
+export type Results = {
+    profileId: string;
+    ratingCount: number;
+    minRatingsToShow: number;
+    ready: boolean;
+    scores: { photos: number | null; bio: number | null; overall: number | null };
+    bioTest: { a: BioVersionResult; b: BioVersionResult };
+    comments: string[];
+};
+
+export async function getResults(ownerCode: string): Promise<Results | null> {
+    const res = await fetch(`${API_URL}/profiles/results/${encodeURIComponent(ownerCode)}`);
+
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(await errorMessage(res));
+
+    return res.json();
+}
+
+export async function deleteProfile(ownerCode: string): Promise<boolean> {
+    const res = await fetch(`${API_URL}/profiles/${encodeURIComponent(ownerCode)}`, {
+        method: "DELETE",
+    });
+
+    if (res.status === 204) return true;
+    if (res.status === 404) return false;
+    throw new Error(await errorMessage(res));
+}

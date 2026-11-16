@@ -53,6 +53,10 @@ public class RatingService {
                 .toList();
     }
 
+    public long deleteRatingsForProfile(String profileId) {
+        return ratingRepo.deleteByProfileId(profileId);
+    }
+
     private void validate(Rating rating) {
         if (rating.getProfileId() == null || rating.getProfileId().isBlank()) {
             throw new InvalidRatingException("profileId is required");
