@@ -2,7 +2,7 @@ import { useState, type SyntheticEvent } from "react";
 import { NavLink } from "react-router";
 import { createProfile } from "../api";
 
-export default function postProfilePage() {
+export default function PostProfilePage() {
     const [age, setAge] = useState("");
     const [city, setCity] = useState("");
     const [imageUrl, setImageUrl] = useState("");
@@ -60,9 +60,10 @@ export default function postProfilePage() {
                 <button className="btn" onClick={copyCode}>
                     {copied ? "Copied!" : "Copy code"}
                 </button>
-                <p>
-                    <NavLink to="/result">See results</NavLink> · <button className="btn-ghost" onClick={startOver}>Post another</button>
-                </p>
+                <div className="actions">
+                    <NavLink to="/result" className="btn-dark">See results</NavLink>
+                    <button className="btn-ghost" onClick={startOver}>Post another profile</button>
+                </div>
             </section>
         );
     }
