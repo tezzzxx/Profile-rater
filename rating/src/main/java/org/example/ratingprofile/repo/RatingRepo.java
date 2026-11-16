@@ -9,4 +9,6 @@ public interface RatingRepo extends MongoRepository <Rating, String>{
     boolean existsByProfileIdAndRaterId(String profileId, String raterId);
 
     List<Rating> findByProfileIdOrderByCreatedAtDesc(String profileId);
+
+    long deleteByProfileId(String profileId);
 }
