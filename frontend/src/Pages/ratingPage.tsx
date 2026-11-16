@@ -59,54 +59,69 @@ export default function RatingPage() {
         loadNext();
     }, []);
 
-    if (loading) return <p>Loading…</p>;
-    if (error) return <p>{error} <button onClick={loadNext}>Try again</button></p>;
-    if (!profile) return <p>You have rated all profiles. Come back later!</p>;
+    if (loading) return <section className="page"><p className="subtitle">Loading…</p></section>;
+    if (error) {
+        return (
+            <section className="page">
+                <p>{error}</p>
+                <button className="btn-ghost" onClick={loadNext}>Try again</button>
+            </section>
+        );
+    }
+    if (!profile) {
+        return (
+            <section className="page">
+                <h2>All done!</h2>
+                <p className="subtitle">You have rated all profiles. Come back later!</p>
+            </section>
+        );
+    }
 
     return (
-        <section>
-            <h2>Rate this profile</h2>
-            <img src={profile.imageUrl} alt="Profile photo" style={{ maxWidth: 300 }} />
-            <p>{profile.age} years · {profile.city}</p>
-            <p>{profile.bio}</p>
+        <section className="page">
+            <h2>Would you swipe right?</h2>
+            <p className="subtitle">Be honest. They will never know it was you.</p>
 
-            <form onSubmit={handleSubmit}>
-                <ScoreInput label="Photo" value={picRating} onChange={setPicRating} />
-                <ScoreInput label="Bio" value={bioRating} onChange={setBioRating} />
-                <ScoreInput label="Overall" value={overallRating} onChange={setOverallRating} />
+            <div className="card">
+                <img className="profile-photo" src={profile.imageUrl} alt="Profile photo" />
+                <div className="profile-meta">{profile.age} years · {profile.city}</div>
+                <p className="profile-bio">{profile.bio}</p>
 
-                <label>
-                    Comment (optional)
-                    <br />
-                    <textarea
-                        value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        rows={3}
-                    />
-                </label>
-                <br />
-                <button type="submit" disabled={sending}>
-                    {sending ? "Sending…" : "Send rating"}
-                </button>
-            </form>
+                <form onSubmit={handleSubmit}>
+                    <ScoreInput label="Photo" value={picRating} onChange={setPicRating} />
+                    <ScoreInput label="Bio" value={bioRating} onChange={setBioRating} />
+                    <ScoreInput label="Overall" value={overallRating} onChange={setOverallRating} />
+
+                    <label className="field">
+                        Comment <span className="hint">Optional – what should they change?</span>
+                        <textarea value={comment} onChange={(e) => setComment(e.target.value)} />
+                    </label>
+
+                    <button className="btn" type="submit" disabled={sending}>
+                        {sending ? "Sending…" : "Send rating"}
+                    </button>
+                </form>
+            </div>
         </section>
     );
 }
 
 function ScoreInput(props: { label: string; value: number; onChange: (v: number) => void }) {
     return (
-        <p>
-            {props.label}:{" "}
-            {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                    key={n}
-                    type="button"
-                    onClick={() => props.onChange(n)}
-                    className={n === props.value ? "selected" : ""}
-                >
-                    {n}
-                </button>
-            ))}
-        </p>
+        <div className="score">
+            <span className="score-label">{props.label}</span>
+            <div className="score-options">
+                {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                        key={n}
+                        type="button"
+                        className={n === props.value ? "selected" : ""}
+                        onClick={() => props.onChange(n)}
+                    >
+                        {n}
+                    </button>
+                ))}
+            </div>
+        </div>
     );
 }

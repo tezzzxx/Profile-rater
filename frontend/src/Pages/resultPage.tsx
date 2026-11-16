@@ -45,13 +45,13 @@ export default function ResultPage() {
     }
 
     return (
-        <section>
-            <h2>See your results</h2>
+        <section className="page">
+            <h2>What do people really think?</h2>
+            <p className="subtitle">Enter the code you got when you posted your profile.</p>
 
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form className="card" onSubmit={handleSubmit}>
+                <label className="field">
                     Owner code
-                    <br />
                     <input
                         value={ownerCode}
                         onChange={(e) => setOwnerCode(e.target.value)}
@@ -59,18 +59,19 @@ export default function ResultPage() {
                         required
                     />
                 </label>
-                <button type="submit" disabled={loading}>
+                <button className="btn" type="submit" disabled={loading}>
                     {loading ? "Loading…" : "Show results"}
                 </button>
             </form>
 
             {error && <p>{error}</p>}
-            {notFound && <p>No profile found with that owner code.</p>}
-            {deleted && <p>Your profile and all its ratings have been deleted.</p>}
+            {notFound && <p className="subtitle">No profile found with that owner code.</p>}
+            {deleted && <p className="subtitle">Your profile and all its ratings have been deleted.</p>}
             {results && (
                 <>
                     <ResultsView results={results} />
-                    <button type="button" onClick={handleDelete}>
+                    <p className="section-title">Danger zone</p>
+                    <button type="button" className="btn btn-ghost" onClick={handleDelete}>
                         Delete profile
                     </button>
                 </>
@@ -81,41 +82,62 @@ export default function ResultPage() {
 
 function ResultsView({ results }: { results: Results }) {
     const fmt = (n: number | null) => (n === null ? "–" : n.toFixed(1));
+    const pct = (n: number | null) => (n === null ? 0 : (n / 5) * 100); // bredde på stolpen, skala 1–5
 
     if (!results.ready) {
         return (
-            <p>
-                Your profile has {results.ratingCount} of {results.minRatingsToShow} ratings needed.
-                Check back later!
-            </p>
+            <>
+                <p className="section-title">Results</p>
+                <div className="card">
+                    <p>Your profile has {results.ratingCount} of {results.minRatingsToShow} ratings needed.</p>
+                    <div className="bar">
+                        <div
+                            className="bar-fill"
+                            style={{ width: `${(results.ratingCount / results.minRatingsToShow) * 100}%` }}
+                        />
+                    </div>
+                    <p className="subtitle">Check back later!</p>
+                </div>
+            </>
         );
     }
 
     return (
-        <div>
-            <h3>Average scores ({results.ratingCount} ratings)</h3>
-            <ul>
-                <li>Photo: {fmt(results.scores.photos)}</li>
-                <li>Bio: {fmt(results.scores.bio)}</li>
-                <li>Overall: {fmt(results.scores.overall)}</li>
-            </ul>
+        <>
+            <p className="section-title">Average scores · {results.ratingCount} ratings</p>
+            <div className="stats">
+                <div className="stat">
+                    <div className="stat-value">{fmt(results.scores.photos)}</div>
+                    <div className="stat-label">Photo</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-value">{fmt(results.scores.bio)}</div>
+                    <div className="stat-label">Bio</div>
+                </div>
+                <div className="stat">
+                    <div className="stat-value">{fmt(results.scores.overall)}</div>
+                    <div className="stat-label">Overall</div>
+                </div>
+            </div>
 
-            <h3>Bio A/B test</h3>
-            <ul>
-                <li>Bio A: {fmt(results.bioTest.a.average)} ({results.bioTest.a.count} ratings)</li>
-                <li>Bio B: {fmt(results.bioTest.b.average)} ({results.bioTest.b.count} ratings)</li>
-            </ul>
+            <p className="section-title">Bio A/B test</p>
+            <div className="card">
+                <div>Bio A · {fmt(results.bioTest.a.average)} ({results.bioTest.a.count} ratings)</div>
+                <div className="bar"><div className="bar-fill" style={{ width: `${pct(results.bioTest.a.average)}%` }} /></div>
+                <div>Bio B · {fmt(results.bioTest.b.average)} ({results.bioTest.b.count} ratings)</div>
+                <div className="bar"><div className="bar-fill" style={{ width: `${pct(results.bioTest.b.average)}%` }} /></div>
+            </div>
 
-            <h3>Comments</h3>
-            {results.comments.length === 0 ? (
-                <p>No comments yet.</p>
-            ) : (
-                <ul>
-                    {results.comments.map((c, i) => (
-                        <li key={i}>{c}</li>
-                    ))}
-                </ul>
-            )}
-        </div>
+            <p className="section-title">Comments</p>
+            <div className="card">
+                {results.comments.length === 0 ? (
+                    <p className="subtitle">No comments yet.</p>
+                ) : (
+                    results.comments.map((c, i) => (
+                        <div className="comment" key={i}>{c}</div>
+                    ))
+                )}
+            </div>
+        </>
     );
 }
