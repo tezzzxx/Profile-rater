@@ -14,8 +14,9 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import org.example.profile.kafka.ProfileDeletedPublisher;
 
- // oppretter profil, henter en profil, velger neste profil en nettleser skal vurdere (MED a/B test av bioRating)
+// Oppretter, henter og sletter profiler, og velger neste profil en nettleser skal vurdere (med A/B-test av bio)
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class ProfileService {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     private final ProfileRepo repo;
+    private final ProfileDeletedPublisher profileDeletedPublisher;
 
     public CreateProfileResponse createProfile(CreateProfileRequest request) {
         if (request.age() == null || request.age() < 18) {
@@ -51,6 +53,15 @@ public class ProfileService {
         return repo.findById(id)
                 .map(ProfileResponse::from)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
+    }
+
+    public void deleteByOwnerCode(String ownerCode){
+        Profile profile = repo.findByOwnerCode(ownerCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile found with that owner code"));
+
+        repo.delete(profile);
+        profileDeletedPublisher.publishProfileDeleted(profile.getId());
+
     }
 
     public Optional<ProfileResponse> getNextProfileToRate(String raterId) {
