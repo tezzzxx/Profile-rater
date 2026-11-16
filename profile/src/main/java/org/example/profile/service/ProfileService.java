@@ -32,6 +32,10 @@ public class ProfileService {
         if (request.age() == null || request.age() < 18) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Age must be 18 or above");
         }
+        if (request.city() != null && !request.city().isBlank()
+                && !request.city().matches("[\\p{L} \\-]+")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "City can only contain letters");
+        }
         if (request.bioA() == null || request.bioA().isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bio A can not be empty");
         }

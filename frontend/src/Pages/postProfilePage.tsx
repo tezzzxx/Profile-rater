@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { NavLink } from "react-router";
 import { createProfile } from "../api";
 
@@ -13,7 +13,7 @@ export default function postProfilePage() {
     const [error, setError] = useState<string | null>(null);
     const [ownerCode, setOwnerCode] = useState<string | null>(null);
 
-    async function handleSubmit(e: FormEvent){
+    async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
 
         setSending(true);
@@ -72,7 +72,10 @@ export default function postProfilePage() {
                     </label>
                     <label className="field">
                         City
-                        <input value={city} onChange={(e) => setCity(e.target.value)} />
+                        <input
+                            value={city}
+                            onChange={(e) => setCity(e.target.value.replace(/[^\p{L} \-]/gu, ""))}   // fjerner alt som ikke er bokstav, mellomrom eller bindestrek
+                        />
                     </label>
                 </div>
 

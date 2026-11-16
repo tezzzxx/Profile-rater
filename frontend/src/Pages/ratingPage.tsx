@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useState, type SyntheticEvent, useEffect} from "react";
 import { getNextProfile, getRaterId, submitRating, type Profile } from "../api";
 
 export default function RatingPage() {
@@ -25,7 +25,7 @@ export default function RatingPage() {
         }
     }
 
-    async function handleSubmit(e: React.FormEvent) {
+    async function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!profile) return;
 
