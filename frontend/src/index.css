@@ -119,6 +119,7 @@ input:focus, textarea:focus {
 textarea { min-height: 96px; resize: vertical; }
 
 /* --------------------------------------------- Knapper --------------------------------------------- */
+
 .btn {
     display: inline-block;
     width: 100%;
@@ -134,9 +135,12 @@ textarea { min-height: 96px; resize: vertical; }
 }
 .btn:hover { opacity: 0.9; }
 .btn:disabled { opacity: 0.4; cursor: default; }
+.btn:active { transform: scale(0.96); }
+.btn { transition: opacity 0.15s, transform 0.1s, background 0.2s; }
 .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 
 /* ----------------------------------------- RATING PAGE ----------------------------------------------- */
+
 .profile-photo {
     width: 100%;
     aspect-ratio: 4 / 5;
@@ -162,7 +166,7 @@ textarea { min-height: 96px; resize: vertical; }
 }
 .score-options button.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-/* --------------------------------------------- OWNERCODE --------------------------------------------- */
+/* --------------------------------------------- OWNER CODE --------------------------------------------- */
 .code-box {
     background: var(--accent-soft);
     color: var(--accent);
