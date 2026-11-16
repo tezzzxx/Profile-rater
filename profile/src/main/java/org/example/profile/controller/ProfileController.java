@@ -17,7 +17,8 @@ import lombok.extern.slf4j.Slf4j;
  * - POST /profiles                     → opprett profil
  * - GET  /profiles/next                → neste profil å vurdere
  * - GET  /profiles/results/{ownerCode} → resultatene for eieren av profilen
- *  * - GET  /profiles/{id}                → hent én profil
+ * - GET  /profiles/{id}                → hent én profil
+ * - DELETE /profiles/{ownerCode}                → sletter en profil
  * Tar imot kallet og sender det videre til ProfileService.
  */
 
@@ -54,5 +55,9 @@ public class ProfileController {
         return service.getById(id);
     }
 
-
+    @DeleteMapping("/{ownerCode}")
+    public ResponseEntity<Void> deleteProfile(@PathVariable String ownerCode){
+        service.deleteByOwnerCode(ownerCode);
+        return ResponseEntity.noContent().build();
+    }
 }

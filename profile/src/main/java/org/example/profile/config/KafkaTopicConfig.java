@@ -13,13 +13,22 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaTopicConfig {
 
     public static final String RATING_CREATED_TOPIC = "rating-created";
+    public static final String PROFILE_DELETED_TOPIC = "profile-deleted";
 
-    //topicet rating sender vurdering til, og profil leser fra.
     @Bean
     public NewTopic ratingCreatedTopic() {
         return TopicBuilder.name(RATING_CREATED_TOPIC)
-                .partitions(2) //to profile-instanser kan dele arbeidet
+                .partitions(2)      //to profile-instanser kan dele arbeidet
                 .replicas(1)       // har bare 1 kafka server, så bare 1 kopi
                 .build();
     }
+
+    @Bean
+    public NewTopic profileDeletedTopi(){
+        return TopicBuilder.name(PROFILE_DELETED_TOPIC)
+                .partitions(2)
+                .replicas(1)
+                .build();
+    }
 }
+
