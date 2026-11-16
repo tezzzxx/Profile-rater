@@ -101,7 +101,7 @@ function ScoreInput(props: { label: string; value: number; onChange: (v: number)
                     key={n}
                     type="button"
                     onClick={() => props.onChange(n)}
-                    style={{ fontWeight: n === props.value ? "bold" : "normal" }}
+                    className={n === props.value ? "selected" : ""}
                 >
                     {n}
                 </button>

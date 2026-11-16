@@ -12,6 +12,20 @@ export function getRaterId(): string {
     return id;
 }
 
+export type NewProfile = {
+
+    age: number;
+    city: string;
+    imageUrl: string;
+    bioA: string;
+    bioB: string;
+};
+
+export type CreatedProfile = {
+    id: string;
+    ownerCode: string;
+};
+
 export type Profile = {
     id: string;
     age: number;
@@ -30,6 +44,17 @@ export type NewRating = {
     overallRating: number;
     profileComment: string;
 };
+
+export async function createProfile(profile: NewProfile): Promise<CreatedProfile> {
+    const response = await fetch(`${API_URL}/profiles`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+    });
+
+    if (!response.ok) throw new Error(await errorMessage(response));
+    return response.json();
+}
 
 export async function getNextProfile(raterId: string): Promise<Profile | null> {
     const res = await fetch(`${API_URL}/profiles/next?raterId=${encodeURIComponent(raterId)}`);
