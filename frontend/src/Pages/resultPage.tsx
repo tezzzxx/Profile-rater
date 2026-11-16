@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { getResults, type Results } from "../api";
+import { deleteProfile, getResults, type Results } from "../api";
 
 export default function ResultPage() {
     const [ownerCode, setOwnerCode] = useState("");
@@ -7,6 +7,7 @@ export default function ResultPage() {
     const [notFound, setNotFound] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [deleted, setDeleted] = useState(false);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
@@ -14,6 +15,7 @@ export default function ResultPage() {
         setError(null);
         setNotFound(false);
         setResults(null);
+        setDeleted(false);
         try {
             const found = await getResults(ownerCode.trim().toUpperCase());
             if (found) {
@@ -25,6 +27,20 @@ export default function ResultPage() {
             setError((e as Error).message);
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleDelete() {
+        if (!window.confirm("Delete your profile and all its ratings? This cannot be undone.")) {
+            return;
+        }
+        setError(null);
+        try {
+            await deleteProfile(ownerCode.trim().toUpperCase());
+            setResults(null);
+            setDeleted(true);
+        } catch (e) {
+            setError((e as Error).message);
         }
     }
 
@@ -50,7 +66,15 @@ export default function ResultPage() {
 
             {error && <p>{error}</p>}
             {notFound && <p>No profile found with that owner code.</p>}
-            {results && <ResultsView results={results} />}
+            {deleted && <p>Your profile and all its ratings have been deleted.</p>}
+            {results && (
+                <>
+                    <ResultsView results={results} />
+                    <button type="button" onClick={handleDelete}>
+                        Delete profile
+                    </button>
+                </>
+            )}
         </section>
     );
 }

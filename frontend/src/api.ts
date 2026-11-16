@@ -81,3 +81,13 @@ export async function getResults(ownerCode: string): Promise<Results | null> {
 
     return res.json();
 }
+
+export async function deleteProfile(ownerCode: string): Promise<boolean> {
+    const res = await fetch(`${API_URL}/profiles/${encodeURIComponent(ownerCode)}`, {
+        method: "DELETE",
+    });
+
+    if (res.status === 204) return true;
+    if (res.status === 404) return false;
+    throw new Error(await errorMessage(res));
+}
