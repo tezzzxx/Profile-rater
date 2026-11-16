@@ -1,13 +1,13 @@
 
 /* ----------------------------------------- Farger og mål  ------------------------------------------ */
 :root {
-    --bg: #fafaf7;          /* bakgrunn, varm off-white */
-    --surface: #ffffff;     /* kort */
-    --ink: #1c1c1a;         /* hovedtekst */
-    --muted: #6b6b66;       /* hjelpetekst */
-    --line: #e8e6e1;        /* tynne kanter */
-    --accent: #e8604c;      /* korall – knapper og markeringer */
-    --accent-soft: #fdeeeb; /* lys korall bak tall og koder */
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --ink: #1c1c1a;
+    --muted: #6b6b66;
+    --line: #e8e6e1;
+    --accent: #e8604c;
+    --accent-soft: #fdeeeb;
     --radius: 16px;
     --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
@@ -37,7 +37,7 @@ header h1 { font-size: 18px; margin: 0; letter-spacing: -0.02em; }
 header nav { display: flex; gap: 20px; }
 header nav a { color: var(--muted); text-decoration: none; font-size: 14px; }
 header nav a:hover,
-header nav a.active { color: var(--ink); } /* NavLink setter "active" selv */
+header nav a.active { color: var(--ink); }
 
 main { max-width: 560px; margin: 0 auto; padding: 8px 16px 64px; }
 h2 { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; margin: 0 0 8px; }
@@ -190,4 +190,3 @@ textarea { min-height: 96px; resize: vertical; }
 .comment:first-child { border-top: none; }
 
 .section-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 32px 0 12px; }
-
