@@ -13,5 +13,5 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "profile")
 public class ProfileProperties{
 
-    private int minRatings = 5;
+    private int minRatings = 1;
 }
