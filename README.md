@@ -9,7 +9,17 @@ constructive feedback to better their profile. it is anonymous, you can write mu
 bios (So you can choose the best one) and all you need is your owner code to keep track
 of everything.
 
-## Arcitechture
+## Architecture
+
+![Architecture](docs/Architecture.png)
+
+- **frontend:** React app served by nginx. Talks only to the gateway.
+- **gateway:** the only entry point. Routes `/profiles/**` to profile and `/ratings/**` to rating.
+- **profile:** creates, shows and deletes profiles. Keeps score totals and calculates results.
+- **rating:** stores ratings and comments. Makes sure a browser rates a profile only once.
+- **Kafka:** sends events between profile and rating.
+- **Consul:** service discovery and central configuration.
+- **MongoDB:** one database per service, `mongo_profile` and `mongo_rating`.
 
 ## How to run
 
@@ -105,3 +115,6 @@ The same `./mvnw clean package` works in `gateway/` and `profile/`. On Windows u
 ```bash
 curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/json" -d "@rating/rating.json"
 ```
+
+
+
