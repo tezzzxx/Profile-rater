@@ -105,3 +105,6 @@ The same `./mvnw clean package` works in `gateway/` and `profile/`. On Windows u
 ```bash
 curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/json" -d "@rating/rating.json"
 ```
+
+
+
