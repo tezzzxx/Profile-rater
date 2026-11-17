@@ -2,13 +2,14 @@ import { useState, type SyntheticEvent } from "react";
 import { NavLink } from "react-router";
 import { createProfile } from "../api";
 
-export default function postProfilePage() {
+export default function PostProfilePage() {
     const [age, setAge] = useState("");
     const [city, setCity] = useState("");
     const [imageUrl, setImageUrl] = useState("");
     const [bioA, setBioA] = useState("");
     const [bioB, setBioB] = useState("");
 
+    const [copied, setCopied] = useState(false);
     const [sending, setSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [ownerCode, setOwnerCode] = useState<string | null>(null);
@@ -34,6 +35,13 @@ export default function postProfilePage() {
         }
     }
 
+    async function copyCode() {
+        if (!ownerCode) return;
+        await navigator.clipboard.writeText(ownerCode);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    }
+
     function startOver() {
         setAge("");
         setCity("");
@@ -49,12 +57,13 @@ export default function postProfilePage() {
                 <h2>Your profile is live</h2>
                 <p className="subtitle">Save this code. It is the only way to see your results.</p>
                 <div className="code-box">{ownerCode}</div>
-                <button className="btn" onClick={() => navigator.clipboard.writeText(ownerCode)}>
-                    Copy code
+                <button className="btn" onClick={copyCode}>
+                    {copied ? "Copied!" : "Copy code"}
                 </button>
-                <p>
-                    <NavLink to="/result">See results</NavLink> · <button className="btn-ghost" onClick={startOver}>Post another</button>
-                </p>
+                <div className="actions">
+                    <NavLink to="/result" className="btn-dark">See results</NavLink>
+                    <button className="btn-ghost" onClick={startOver}>Post another profile</button>
+                </div>
             </section>
         );
     }

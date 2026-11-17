@@ -1,20 +1,21 @@
 package org.example.profile.service;
 
-import lombok.RequiredArgsConstructor;
 import org.example.profile.dto.CreateProfileRequest;
 import org.example.profile.dto.CreateProfileResponse;
 import org.example.profile.dto.ProfileResponse;
 import org.example.profile.model.Profile;
 import org.example.profile.repo.ProfileRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.example.profile.kafka.ProfileDeletedPublisher;
+import org.example.profile.exception.InvalidProfileException;
+import org.example.profile.exception.ProfileNotFoundException;
 
+import lombok.RequiredArgsConstructor;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
-import org.example.profile.kafka.ProfileDeletedPublisher;
+
 
 // Oppretter, henter og sletter profiler, og velger neste profil en nettleser skal vurdere (med A/B-test av bio)
 
@@ -29,16 +30,7 @@ public class ProfileService {
     private final ProfileDeletedPublisher profileDeletedPublisher;
 
     public CreateProfileResponse createProfile(CreateProfileRequest request) {
-        if (request.age() == null || request.age() < 18) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Age must be 18 or above");
-        }
-        if (request.city() != null && !request.city().isBlank()
-                && !request.city().matches("[\\p{L} \\-]+")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "City can only contain letters");
-        }
-        if (request.bioA() == null || request.bioA().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bio A can not be empty");
-        }
+        validate(request);
 
         Profile profile = new Profile();
         profile.setOwnerCode(newOwnerCode());
@@ -56,16 +48,15 @@ public class ProfileService {
     public ProfileResponse getById(String id){
         return repo.findById(id)
                 .map(ProfileResponse::from)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found"));
+                .orElseThrow(() -> new ProfileNotFoundException("Profile not found"));
     }
 
     public void deleteByOwnerCode(String ownerCode){
         Profile profile = repo.findByOwnerCode(ownerCode)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile found with that owner code"));
+                .orElseThrow(() -> new ProfileNotFoundException("No profile found with given owner code"));
 
         repo.delete(profile);
         profileDeletedPublisher.publishProfileDeleted(profile.getId());
-
     }
 
     public Optional<ProfileResponse> getNextProfileToRate(String raterId) {
@@ -104,9 +95,22 @@ public class ProfileService {
         return sb.toString();
     }
 
-
     private String blankToNull(String value) {
         return value == null || value.isBlank() ? null : value.trim();
     }
+
+    private void validate(CreateProfileRequest request){
+        if (request.age() == null || request.age() < 18) {
+            throw new InvalidProfileException("Age must be 18 or above");
+        }
+        if (request.city() != null && !request.city().isBlank() && !request.city().matches("[\\p{L} \\-]+")) {
+            throw new InvalidProfileException("City can only contain letters");
+        }
+        if (request.bioA() == null || request.bioA().isBlank()) {
+            throw new InvalidProfileException("Bio A can not be empty!");
+        }
+    }
+
+
 }
 
