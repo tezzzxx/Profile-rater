@@ -24,7 +24,7 @@ jobs:
         working-directory: ${{ matrix.service }}
         run: |
           chmod +x mvnw
-          ./mvnw -B clean package -DskipTests
+          ./mvnw -B clean verify
 
   frontend:
     runs-on: ubuntu-latest
