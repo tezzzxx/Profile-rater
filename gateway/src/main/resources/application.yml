@@ -44,6 +44,10 @@ spring:
               uri: lb://rating
               predicates:
                 - Path=/ratings, /ratings/**
+            - id: rating-docs
+              uri: lb://rating
+              predicates:
+                - Path=/rating-docs/**
 
 management:
   endpoints:
