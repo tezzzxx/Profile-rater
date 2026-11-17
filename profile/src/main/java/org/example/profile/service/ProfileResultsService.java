@@ -2,14 +2,13 @@ package org.example.profile.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.profile.client.RatingClient;
+import org.example.profile.config.ProfileProperties;
 import org.example.profile.dto.RatingCommentResponse;
 import org.example.profile.dto.ResultsResponse;
+import org.example.profile.exception.ProfileNotFoundException;
 import org.example.profile.model.Profile;
 import org.example.profile.repo.ProfileRepo;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-import org.example.profile.config.ProfileProperties;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class ProfileResultsService{
 
     public ResultsResponse getResults(String ownerCode){
         Profile profile = repo.findByOwnerCode(ownerCode)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No profile found with that owner code"));
+                .orElseThrow(() -> new ProfileNotFoundException("No profile found with that owner code"));
 
         int minRatingsToShow = profileProperties.getMinRatings();
         boolean ready = profile.getRatingCount() >= minRatingsToShow;
