@@ -21,6 +21,30 @@ of everything.
 - **Consul:** service discovery and central configuration.
 - **MongoDB:** one database per service, `mongo_profile` and `mongo_rating`.
 
+## Communication
+
+**Synchronous(REST):**
+  - rating → profile: before a rating is saved, rating checks that the profile exists
+  - profile → rating: the result page gets comments for a profile from rating
+
+**Asynchronous(Kafka):**
+  - `RatingCreated`(rating → profile): profile updates the score totals
+  - `ProfileDeleted`(profile → rating): rating deletes all ratings for the deleted profile
+
+## Load balancing & configuration
+
+- profile and rating run with 2 instances each.
+- Gateway uses `lb://profile` and `lb://rating`, looks up the instances in Consul
+  and spreads the calls between them. If one stops the other one takes over.
+- Central configuration is stored in Consul KV. The`consul-init` container puts the values in at startup. The values can be changed in Consul while the system is running without a rebuild.
+  - `profile.min-ratings`: how many ratings a profile needs before results are shown
+  - `rating.max-score`: the highest score you can give when reviewing.
+
+## Robustness
+- Profile does not depend on rating to show results. The scores are stored in profile, so only the comments are missing if rating does not answer.
+- Kafka may deliver an event twice. Profile keeps a list of who has rated each profile, so duplicates are ignored.
+- Every service has a health check, and Consul only routes to healthy instances.
+
 ## How to run
 
 ### Requirements

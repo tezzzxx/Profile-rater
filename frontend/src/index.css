@@ -43,7 +43,7 @@ main { max-width: 560px; margin: 0 auto; padding: 8px 16px 64px; }
 h2 { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; margin: 0 0 8px; }
 img { max-width: 100%; border-radius: 12px; }
 
-/* ------------------------------------------- BASE Button ---------------------------------------------*/
+/* ------------------------------------------- Base Button ---------------------------------------------*/
 button {
     font: inherit;
     padding: 8px 14px;
@@ -54,18 +54,15 @@ button {
     cursor: pointer;
 }
 button:hover { border-color: var(--accent); }
-
 button.selected {
     background: var(--accent);
     border-color: var(--accent);
     color: #fff;
 }
 
-/* ---------------------------------------- Page og Card ------------------------------------------------ */
+/* ---------------------------------------- Page & Card ------------------------------------------------ */
 
 .page { max-width: 560px; margin: 0 auto; }
-
-h1 { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; margin: 0 0 8px; }
 .subtitle { color: var(--muted); margin: 0 0 32px; }
 
 .card {
@@ -75,9 +72,8 @@ h1 { font-size: 28px; letter-spacing: -0.03em; line-height: 1.2; margin: 0 0 8px
     padding: 24px;
 }
 
-/* ------------------------------------------- Form fields -------------------------------------------------- */
+/* ------------------------------------------- Form Fields -------------------------------------------------- */
 .field { min-width: 0; display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
-.field label,
 label.field { font-size: 14px; font-weight: 600; }
 .field input,
 .field textarea { font-weight: 400; }
@@ -182,7 +178,7 @@ textarea { min-height: 96px; resize: vertical; }
     font: inherit;
     cursor: pointer;
 }
-.score-options button.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+.score-options button.selected { background: var(--accent); border-color: var(--accent); color: #fff;}
 
 /* --------------------------------------------- OWNER CODE --------------------------------------------- */
 .code-box {
