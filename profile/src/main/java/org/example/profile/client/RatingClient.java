@@ -18,7 +18,6 @@ public class RatingClient {
 
     private final RestClient restClient;
 
-    //rating.base-url = http://rating (navnet i Consul)
     public RatingClient(RestClient.Builder builder, @Value("${rating.base-url}") String ratingBaseUrl) {
         this.restClient = builder.baseUrl(ratingBaseUrl).build();
     }

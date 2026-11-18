@@ -17,7 +17,6 @@ public class ProfileScoreService {
 
     public void recordRating(RatingCreatedEvent event) {
 
-        // finner profilen og sjekker om den allerede et rated
         Optional<Profile> foundProfile = repo.findById(event.profileId());
         if (foundProfile.isEmpty()){
             log.warn("No profile found for profileId: {}", event.profileId());

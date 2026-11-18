@@ -50,6 +50,7 @@ public class ProfileResultsService{
                         average(profile.getBioBScoreSum(), profile.getBioBRatingCount()),
                         profile.getBioBRatingCount())
         );
+
         //henter kommentarer fra rating + fjerner tomme
         List<String> comments = ratingClient.getCommentsForProfile(profile.getId()).stream()
                 .map(RatingCommentResponse::comment)
@@ -60,7 +61,6 @@ public class ProfileResultsService{
                 true, scores, bioTest, comments);
     }
 
-    //snitt med en desimal eller null hvis ingen vurdert
     private Double average(int sum, int count){
         if (count == 0){
             return null;
