@@ -159,6 +159,15 @@ curl.exe -i -X POST http://127.0.0.1:8080/profiles -H "Content-Type: application
 
 ### 2. Rate others profile 
 
+## Test data
+
+There are already 4 test profiles in the application, so you can start rating right away.
+These are the owner codes for the profiles:
+- `DMO-AAAA`
+- `DMO-BBBB`
+- `DMO-CCCC`
+- `DMO-DDDD` – this one already has 3 ratings, so you can see a finished results page
+
 1. Click rating in the menu. Get a profile, shown with bio A or B
 2. Score bio, picture and give an overall rating from 1-5. Write an optional comment
 3. Submit and the next profile will be shown automatically. When there is no more profiles, "All done!" will be shown
