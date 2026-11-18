@@ -30,6 +30,8 @@ feedback. It is anonymous, you can write two bios and see which one performs bes
 - `RatingCreated` (rating → profile, topic `rating-created`): profile updates the score totals.
 - `ProfileDeleted` (profile → rating, topic `profile-deleted`): rating deletes all ratings for the deleted profile.
 
+Detailed endpoints and event formats: [docs/contracts.md](docs/contracts.md)
+
 ### Load balancing and configuration
 
 - profile and rating run with 2 instances each.
@@ -48,11 +50,11 @@ feedback. It is anonymous, you can write two bios and see which one performs bes
 
 - Docker Desktop
 - Git
-- For local development: Java 21 and Node 22
+- Java 21 (only to build and run the tests with Maven)
 
 > **Windows users:** Use `127.0.0.1` instead of `localhost`. `localhost` can resolve to IPv6 (`::1`) and give "Connection reset". In PowerShell, use `curl.exe` instead of `curl`.
 
-### Startup procedure (Docker)
+### Startup procedure
 
 **1. Clone the repository**
 
@@ -69,10 +71,10 @@ docker compose up --build -d
 
 **3. Running**
 
-- Frontend: http://127.0.0.1:5173 
-- Gateway: http://127.0.0.1:8080 
-- Consul UI: http://127.0.0.1:8500 
-- Swagger (rating): http://127.0.0.1:8080/rating-docs/swagger-ui.html 
+- Frontend: http://127.0.0.1:5173
+- Gateway: http://127.0.0.1:8080
+- Consul UI: http://127.0.0.1:8500
+- Swagger (rating): http://127.0.0.1:8080/rating-docs/swagger-ui.html
 
 **4. Checks**
 
@@ -84,7 +86,7 @@ docker compose up --build -d
 - **Gateway health:**
   ```bash
   curl.exe http://127.0.0.1:8080/actuator/health
-  # {"status":"UP"}
+  # {"groups":["liveness","readiness"],"status":"UP"}
   ```
 - **Create a test profile** through the gateway:
   ```bash
@@ -94,46 +96,46 @@ docker compose up --build -d
 
 **5. Stop**
 
+Run this when you are finished testing:
+
 ```bash
-docker compose down # stop     
+docker compose down # stop
 docker compose down -v # stop and delete all data
 ```
 
-### Startup procedure (local development)
-
-**1. Start the infrastructure in Docker**
-
-```bash
-docker compose up -d consul consul-init kafka mongo_profile mongo_rating
-```
-
-**2. Start the backend**
-
-Run `GateawayApplication`, `ProfileApplication` and `RatingProfileApplication` from IntelliJ.
-
-**3. Start the frontend**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-> Do not run the same service in IntelliJ and Docker at the same time. Both instances register in Consul and requests are sent to both.
-
 ### Build and test with Maven
+
+Each service has its own Maven wrapper. Go into the service folder first, for example `rating`:
 
 ```bash
 cd rating
-./mvnw clean package -DskipTests # build only
-./mvnw test # integration tests (Docker must be running)
+./mvnw clean package -DskipTests   # build only
+./mvnw test                        # tests (profile and rating use Testcontainers, so Docker must be running)
+cd ..
 ```
-The same commands work in `gateway/` and `profile/`. On Windows use `.\mvnw`.
+
+Do the same in `gateway` and `profile`. On Windows (PowerShell) use `.\mvnw` instead of `./mvnw`.
+
+### CI
+
+GitHub Actions (`.github/workflows/build.yml`) runs on every push and pull request:
+- builds and tests gateway, profile and rating with Maven (`./mvnw verify`, 22 tests with Testcontainers)
+- builds the frontend (`npm ci` and `npm run build`)
+- builds all Docker images (`docker compose build`)
+
+### Demo data
+
+There are already 4 test profiles in the application, so you can start rating right away.
+These are the owner codes for the profiles:
+- `DMO-AAAA`
+- `DMO-BBBB`
+- `DMO-CCCC`
+- `DMO-DDDD` – this one already has 3 ratings, so you can see a finished results page
 
 ### Test data
 
 - `profile/profile.json`: example body for `POST /profiles`
-- `rating/rating.json`: example body for `POST /ratings` (replace `profileId` with an existing id first)
+- `rating/rating.json`: example body for `POST /ratings` (rates the demo profile `demo-1`, a second run gives `409` because it is already rated)
 
 ```bash
 curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/json" -d "@rating/rating.json"
@@ -146,7 +148,7 @@ curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/
 
 1. Click post in the menu
 2. Write my age, my location, the image I want to use (as an url) and two different bios
-3. Click submit. Copy and save my owner code(Example: 68V-EEPH). Use the owner code later to check my ratings or delete my profile
+3. Click submit. Copy and save your owner code (for example `K8V-EEPH`, yours will be different). Use it later to check the results or delete the profile.
 
 **Via API:**
 ```bash
@@ -157,22 +159,13 @@ curl.exe -i -X POST http://127.0.0.1:8080/profiles -H "Content-Type: application
 
 **Behind the scenes:** gateway → profile. Profile stores the profile in `mongo_profile` and generates a unique owner code. There is no login. The owner code works as the owner's credential.
 
-### 2. Rate others profile 
-
-## Test data
-
-There are already 4 test profiles in the application, so you can start rating right away.
-These are the owner codes for the profiles:
-- `DMO-AAAA`
-- `DMO-BBBB`
-- `DMO-CCCC`
-- `DMO-DDDD` – this one already has 3 ratings, so you can see a finished results page
+### 2. Rate others profile
 
 1. Click rating in the menu. Get a profile, shown with bio A or B
 2. Score bio, picture and give an overall rating from 1-5. Write an optional comment
 3. Submit and the next profile will be shown automatically. When there is no more profiles, "All done!" will be shown
 
-**Via API** (replace `profileId` in `rating/rating.json` with an id from story 1):
+**Via API:**
 ```bash
 curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/json" -d "@rating/rating.json"
 # HTTP/1.1 201 Created
@@ -189,13 +182,15 @@ curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/
 2. Write the owner code saved from before and click show results
 3. See how many have rated you, the average score for photo, bios (Both bio A and B) and the overall impression and the comments, newest first
 
+> To rate the same profile as several people (for example to see the A/B test grow), use a private/incognito window or another browser.
+
 **Via API:**
 ```bash
-curl.exe http://127.0.0.1:8080/profiles/results/K8V-EEPH
+curl.exe http://127.0.0.1:8080/profiles/results/DMO-DDDD
 # HTTP/1.1 200 OK
-# {"profileId":"...","ratingCount":3,"minRatingsToShow":1,"ready":true,
-#  "scores":{"photos":4.0,"bio":3.7,"overall":4.3},
-#  "bioTest":{"a":{"average":3.5,"count":2},"b":{"average":4.0,"count":1}},
+# {"profileId":"demo-4","ratingCount":3,"minRatingsToShow":1,"ready":true,
+#  "scores":{"photos":4.0,"bio":4.0,"overall":3.7},
+#  "bioTest":{"a":{"average":4.5,"count":2},"b":{"average":3.0,"count":1}},
 #  "comments":[...]}
 ```
 
@@ -217,13 +212,14 @@ curl.exe -i http://127.0.0.1:8080/profiles/results/K8V-EEPH
 # HTTP/1.1 404 Not Found
 ```
 
-**Check that the ratings were deleted too** (With an ID):
+**Check that the ratings were deleted too** (use the profile id from story 1):
 ```bash
 curl.exe http://127.0.0.1:8080/ratings/profile/<profileId>
 # []
 
 docker compose logs rating | Select-String "Deleted"
 # rating-1  | ... Deleted 3 ratings for deleted profile 6afc23a32f056d4d85966d57
+# Mac/Linux: docker compose logs rating | grep Deleted
 ```
 
 **Behind the scenes:** profile deletes the profile and publishes a `ProfileDeleted` event to Kafka (`profile-deleted`). Rating consumes the event and deletes all ratings for that profile. Only one of the two rating instances handles each event, because they share the consumer group `rating`.
@@ -240,7 +236,7 @@ Configuration is stored in Consul KV and read by the services at runtime (`sprin
 - `config/profile/profile.min-ratings`: number of ratings before results are shown (default `1`)
 
 **Try it:**
-1. Send a rating with a score of 8 (edit `rating/rating.json`, for example `"picRating": 8`, with a profile you have not rated yet):
+1. Edit `rating/rating.json`: set `"profileId": "demo-2"` and `"picRating": 8`, then send it:
    ```bash
    curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/json" -d "@rating/rating.json"
    # HTTP/1.1 400 Bad Request

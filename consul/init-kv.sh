@@ -9,6 +9,6 @@ echo "Legger inn konfigurasjon i consil KV....."
 consul kv put config/rating/rating.max-score 5
 
 #profile: hvor mange vurderings som trengs før resultatet vises
-consul kv put config/profile/profile.min-rating 1;
+consul kv put config/profile/profile.min-ratings 1;
 
 echo "Ferdig."
