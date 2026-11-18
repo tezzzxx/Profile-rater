@@ -12,7 +12,6 @@ import org.example.profile.config.KafkaTopicConfig;
 
 
 // lytter på rating-created topic og oppdaterer profilen med ny score
-// rating sender en melding hit hver gang noen har vurdert en profil
 
 @Slf4j
 @Component

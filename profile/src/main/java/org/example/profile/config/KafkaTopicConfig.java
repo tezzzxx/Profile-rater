@@ -7,8 +7,6 @@ import org.springframework.kafka.config.TopicBuilder;
 
 // oppretter kafka topicene profile bruker, hvis de ikke finnes fra før
 
-
-
 @Configuration
 public class KafkaTopicConfig {
 
@@ -18,8 +16,8 @@ public class KafkaTopicConfig {
     @Bean
     public NewTopic ratingCreatedTopic() {
         return TopicBuilder.name(RATING_CREATED_TOPIC)
-                .partitions(2)      //to profile-instanser kan dele arbeidet
-                .replicas(1)       // har bare 1 kafka server, så bare 1 kopi
+                .partitions(2)
+                .replicas(1)
                 .build();
     }
 

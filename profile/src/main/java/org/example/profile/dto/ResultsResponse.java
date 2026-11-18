@@ -2,15 +2,13 @@ package org.example.profile.dto;
 
 import java.util.List;
 
-//Info får eieren av profilen se på resultatsiden
-
 public record ResultsResponse(
         String profileId,
         int ratingCount,
         int minRatingsToShow,
         boolean ready,
-        Scores scores, //snitt per kategori
-        BioTest bioTest, //snitt per bioversjon A/B
+        Scores scores,
+        BioTest bioTest,
         List<String> comments
 ){
     public record Scores(Double photos, Double bio, Double overall){}

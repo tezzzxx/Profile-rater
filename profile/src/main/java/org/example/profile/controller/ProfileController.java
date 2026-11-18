@@ -13,13 +13,12 @@ import org.example.profile.service.ProfileResultsService;
 import lombok.extern.slf4j.Slf4j;
 
 /*
- * REST-endepunktene for profiler:
- * - POST /profiles                     → opprett profil
- * - GET  /profiles/next                → neste profil å vurdere
- * - GET  /profiles/results/{ownerCode} → resultatene for eieren av profilen
- * - GET  /profiles/{id}                → hent én profil
- * - DELETE /profiles/{ownerCode}                → sletter en profil
- * Tar imot kallet og sender det videre til ProfileService.
+ * REST-endepunktene for profile:
+ * - POST /profiles                                     → opprett profil
+ * - GET  /profiles/next                                → neste profil å vurdere
+ * - GET  /profiles/results/{ownerCode}                 → resultatene for eieren av profilen
+ * - GET  /profiles/{id}                                → hent én profil
+ * - DELETE /profiles/{ownerCode}                       → sletter en profil
  */
 
 @Slf4j
