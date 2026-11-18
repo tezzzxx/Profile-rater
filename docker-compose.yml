@@ -7,6 +7,7 @@ services:
       - "27017:27017"
     volumes:
       - profile_data:/data/db
+      - ./mongo/seedProfiles.js:/docker-entrypoint-initdb.d/seedProfiles.js:ro
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -22,6 +23,7 @@ services:
       - "27018:27017"
     volumes:
       - rating_data:/data/db
+      - ./mongo/seedRatings.js:/docker-entrypoint-initdb.d/seedRatings.js:ro
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
       interval: 10s
