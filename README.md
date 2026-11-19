@@ -53,6 +53,8 @@ Detailed endpoints and event formats: [docs/contracts.md](docs/contracts.md)
 - Java 21 (only to build and run the tests with Maven)
 
 > **Windows users:** Use `127.0.0.1` instead of `localhost`. `localhost` can resolve to IPv6 (`::1`) and give "Connection reset". In PowerShell, use `curl.exe` instead of `curl`.
+> 
+> **Mac/Linux users:** use `curl` instead of `curl.exe` in the examples.
 
 ### Startup procedure
 
@@ -75,6 +77,7 @@ docker compose up --build -d
 - Gateway: http://127.0.0.1:8080
 - Consul UI: http://127.0.0.1:8500
 - Swagger (rating): http://127.0.0.1:8080/rating-docs/swagger-ui.html
+- Swagger (profile): http://127.0.0.1:8080/profile-docs/swagger-ui/index.html
 
 **4. Checks**
 
@@ -99,22 +102,35 @@ docker compose up --build -d
 Run this when you are finished testing:
 
 ```bash
-docker compose down # stop
-docker compose down -v # stop and delete all data
+docker compose down 
+docker compose down -v 
 ```
 
-### Build and test with Maven
+### Demo data in MongoDB
 
-Each service has its own Maven wrapper. Go into the service folder first, for example `rating`:
+The app starts with 4 demo profiles, so you can try it in the browser right away (http://127.0.0.1:5173).
+They are added automatically the first time the databases start (scripts in `mongo/`).
+
+- **Rating:** the demo profiles are ready to rate.
+- **Result:** enter an owner code to see the results.
+
+Owner codes: `DMO-AAAA`, `DMO-BBBB`, `DMO-CCCC` and `DMO-DDDD`.
+`DMO-DDDD` already has 3 ratings, so it shows a finished results page.
+
+> The demo data is only added when the databases are empty. 
+> To start over with only the demo data, run `docker compose down -v` and then `docker compose up -d`.
+
+### Run the tests (optional)
 
 ```bash
 cd rating
-./mvnw clean package -DskipTests   # build only
-./mvnw test                        # tests (profile and rating use Testcontainers, so Docker must be running)
+./mvnw test                       
 cd ..
 ```
+Do the same in `profile` and `gateway`.
 
-Do the same in `gateway` and `profile`. On Windows (PowerShell) use `.\mvnw` instead of `./mvnw`.
+- On Windows (PowerShell) use `.\mvnw` instead of `./mvnw`.
+- On Mac/Linux, if you get `permission denied`, run `chmod +x mvnw` first.
 
 ### CI
 
@@ -123,16 +139,7 @@ GitHub Actions (`.github/workflows/build.yml`) runs on every push and pull reque
 - builds the frontend (`npm ci` and `npm run build`)
 - builds all Docker images (`docker compose build`)
 
-### Demo data
-
-There are already 4 test profiles in the application, so you can start rating right away.
-These are the owner codes for the profiles:
-- `DMO-AAAA`
-- `DMO-BBBB`
-- `DMO-CCCC`
-- `DMO-DDDD` – this one already has 3 ratings, so you can see a finished results page
-
-### Test data
+### Test Data In Terminal
 
 - `profile/profile.json`: example body for `POST /profiles`
 - `rating/rating.json`: example body for `POST /ratings` (rates the demo profile `demo-1`, a second run gives `409` because it is already rated)
@@ -165,24 +172,19 @@ curl.exe -i -X POST http://127.0.0.1:8080/profiles -H "Content-Type: application
 2. Score bio, picture and give an overall rating from 1-5. Write an optional comment
 3. Submit and the next profile will be shown automatically. When there is no more profiles, "All done!" will be shown
 
-**Via API:**
+> To rate the same profile as several people (for example to see the A/B test grow), use a private/incognito window or another browser.
+
+**Via API** (rates the demo profile `demo-1`, a second run gives `409` because it is already rated):
 ```bash
 curl.exe -i -X POST http://127.0.0.1:8080/ratings -H "Content-Type: application/json" -d "@rating/rating.json"
 # HTTP/1.1 201 Created
 ```
-
-**Behind the scenes:**
-- **Synchronous:** rating calls profile through Consul (REST) to check that the profile exists.
-- **Asynchronous:** rating saves the rating in `mongo_rating` and publishes a `RatingCreated` event to Kafka (`rating-created`). Profile consumes it and updates the score totals.
-- The rater is anonymous: the browser stores a random rater id in `localStorage`.
 
 ### 3. Check the results for my profile
 
 1. Click result in the menu
 2. Write the owner code saved from before and click show results
 3. See how many have rated you, the average score for photo, bios (Both bio A and B) and the overall impression and the comments, newest first
-
-> To rate the same profile as several people (for example to see the A/B test grow), use a private/incognito window or another browser.
 
 **Via API:**
 ```bash
@@ -314,12 +316,15 @@ We split the work by service, so that each of us owned one service from database
 - README
 
 **Natalia (Candidate number: 11)**
-- **profile service:** REST API, owner codes, bio A/B selection, score totals and results, `RatingCreated` consumer and `ProfileDeleted` producer, REST client to rating
+- **profile service:** REST API, owner codes, bio A/B selection, score totals and results, error handling (`GlobalExceptionHandler`), `RatingCreated` consumer and `ProfileDeleted` producer, REST client to rating
 - `docker-compose.yml` with multiple instances and health checks
 - Consul setup and central configuration (`init-kv.sh`)
-- Tests in profile
+- Test data that is loaded on first start (seed scripts in `mongo/`)
+- Integration tests in profile with Testcontainers
+- Swagger/OpenAPI for profile
 - Frontend: the **Post** page and the styling (`index.css`)
 - Architecture diagram
+- README
 
 **Together**
 - Planning, prioritizing the user stories and reducing the scope
