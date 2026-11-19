@@ -103,6 +103,8 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+      consul-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8001/actuator/health | grep -q UP || exit 1"]
       interval: 10s
@@ -127,6 +129,8 @@ services:
         condition: service_healthy
       consul:
         condition: service_healthy
+      consul-init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8002/actuator/health | grep -q UP || exit 1"]
       interval: 10s
